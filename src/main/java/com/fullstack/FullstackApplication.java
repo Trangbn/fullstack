@@ -16,4 +16,5 @@ public class FullstackApplication extends SpringBootServletInitializer {
 	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
 		return application.sources(FullstackApplication.class); //.resourceLoader(new JarResourceLoader());
 	}
+
 }

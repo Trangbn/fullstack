@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -13,11 +14,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        http.authorizeRequests().antMatchers("/webjars/**").permitAll();
         http
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/admin/**").hasRole("ADMIN")
-                .antMatchers("/anonymous*").anonymous()
+                .antMatchers("/admin/**").permitAll()
+                .antMatchers("/anonymous*").permitAll()
                 .antMatchers("/login*").permitAll()
                 .anyRequest().authenticated()
                 .and()
@@ -42,6 +44,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .withUser("user2").password(passwordEncoder().encode("user2Pass")).roles("USER")
                 .and()
                 .withUser("admin").password(passwordEncoder().encode("adminPass")).roles("ADMIN");
+    }
+
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        web
+                .ignoring()
+                .antMatchers("/resources/**");
     }
 
     @Bean

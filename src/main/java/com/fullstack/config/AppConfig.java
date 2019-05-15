@@ -14,14 +14,11 @@ public class AppConfig implements WebMvcConfigurer {
         registry.addResourceHandler("/webjars/**",
                 "/static/backend/css/**",
                 "/static/backend/js/**",
-                "/static/backend/images/**",
-                "/templates/backend/**"
-                ).addResourceLocations("classpath:/META-INF/resources/webjars/",
-                        "classpath:/static/backend/css/",
-                        "classpath:/static/backend/js/",
-                        "classpath:/static/backend/images/",
-                        "classpath:/templates/backend/"
-                );
+                "/static/backend/images/**"
+        ).addResourceLocations("classpath:/META-INF/resources/webjars/",
+                "classpath:/static/backend/css/",
+                "classpath:/static/backend/js/",
+                "classpath:/static/backend/images/"
+        );
     }
-
 }

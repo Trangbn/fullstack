@@ -1,5 +1,6 @@
 package com.fullstack.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -12,38 +13,52 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+//    @Override
+//    protected void configure(HttpSecurity http) throws Exception {
+//        http.authorizeRequests().antMatchers("/webjars/**").permitAll();
+//        http
+//                .csrf().disable()
+//                .authorizeRequests()
+//                .antMatchers("/admin/**").hasRole("ADMIN")
+//                .antMatchers("/anonymous*").anonymous()
+//                .antMatchers("/login*").permitAll()
+//                .anyRequest().authenticated()
+//                .and()
+//                .formLogin()
+//                .loginPage("/login.html")
+//                .loginProcessingUrl("/perform_login")
+//                .defaultSuccessUrl("/homepage.html", true)
+//                .failureUrl("/logout.html")
+////                .failureHandler(authenticationFailureHandler())
+//                .and()
+//                .logout()
+//                .logoutUrl("/perform_logout")
+//                .deleteCookies("JSESSIONID");
+////                .logoutSuccessHandler(logoutSuccessHandler())
+//    }
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests().antMatchers("/webjars/**").permitAll();
-        http
-                .csrf().disable()
-                .authorizeRequests()
-                .antMatchers("/admin/**").permitAll()
-                .antMatchers("/anonymous*").permitAll()
-                .antMatchers("/login*").permitAll()
-                .anyRequest().authenticated()
+
+        http.authorizeRequests().anyRequest().hasAnyRole("ADMIN", "USER")
                 .and()
-                .formLogin()
-                .loginPage("/login.html")
-                .loginProcessingUrl("/perform_login")
-                .defaultSuccessUrl("/homepage.html", true)
-                //.failureUrl("/login.html?error=true")
-//                .failureHandler(authenticationFailureHandler())
-                .and()
-                .logout()
-                .logoutUrl("/perform_logout")
-                .deleteCookies("JSESSIONID");
-//                .logoutSuccessHandler(logoutSuccessHandler())
+                .httpBasic(); // Use Basic authentication
     }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.inMemoryAuthentication()
-                .withUser("user1").password(passwordEncoder().encode("user1Pass")).roles("USER")
+                .withUser("admin")
+                .password("{noop}password")
+                //{noop} makes sure that the password encoder doesn't do anything
+                .roles("ADMIN") // Role of the user
                 .and()
-                .withUser("user2").password(passwordEncoder().encode("user2Pass")).roles("USER")
-                .and()
-                .withUser("admin").password(passwordEncoder().encode("adminPass")).roles("ADMIN");
+                .withUser("user")
+                .password("{noop}password")
+                .credentialsExpired(true)
+                .accountExpired(true)
+                .accountLocked(true)
+                .roles("USER");
     }
 
     @Override
@@ -53,8 +68,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/resources/**", "/static/backend/css/**");
     }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+//    @Bean
+//    public PasswordEncoder passwordEncoder() {
+//        return new BCryptPasswordEncoder();
+//    }
 }

@@ -3,22 +3,11 @@ package com.fullstack.controller.backend;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import java.security.Principal;
-
 @Controller
 public class AuthController  {
-
-    @GetMapping("/")
-    public String home(Model model, Principal principal) {
-        if(principal != null)
-            model.addAttribute("msg", "Welcome " + principal.getName() +" into in-memory managed user using BASIC authentication.");
-        return "backend/layouts/main";
-    }
 
     @RequestMapping(value = "/login.html", method = RequestMethod.GET)
     public String actionSignIn() {
@@ -38,8 +27,14 @@ public class AuthController  {
         return "backend/layouts/main";
     }
 
+    @RequestMapping(value = "/homepage.html", method = RequestMethod.GET)
+    public String actionHome() {
+        return "backend/layouts/main";
+    }
+
     @RequestMapping(value = "/logout.html", method = RequestMethod.GET)
     public String actionLogout() {
-        return "backend/login";
+//        return "backend/login";
+        return "backend/layouts/main";
     }
 }
